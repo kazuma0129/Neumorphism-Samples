@@ -1,6 +1,4 @@
-# cssTexture
-
-> My groundbreaking Nuxt.js project
+# Neumorphism Samples
 
 ## Build Setup
 
