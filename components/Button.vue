@@ -5,7 +5,7 @@
       'background-color': backgroundColor
     }"
   >
-    <v-row align="center" class="ma-10 pa-10">
+    <v-row align="center" class="ma-10 pa-10" :style="notInsetBoxShadowObject">
       <v-col
         v-for="(i, key) in 6"
         :key="key"
@@ -16,12 +16,13 @@
         <v-card
           flat
           shaped
-          :class="[`rounded-` + i]"
+          :class="[`rounded-${key}`, { 'box-shadow-inset': inset }]"
           width="90"
           height="90"
           min-width="90"
           min-height="90"
           :style="boxShadowObject"
+          @click.native="push(key)"
         >
         </v-card>
       </v-col>
@@ -40,29 +41,42 @@ export default {
   data() {
     return {
       topColor: ``,
-      bottomColor: ``
+      bottomColor: ``,
+      inset: false
     }
   },
   computed: {
     boxShadowObject() {
       return {
         'background-color': this.backgroundColor,
-        'box-shadow': this.genBoxShadow()
+        'box-shadow': this.genBoxShadow(this.inset)
+      }
+    },
+    insetBoxShadowObject() {
+      return {
+        'background-color': this.backgroundColor,
+        'box-shadow': this.genBoxShadow(true)
+      }
+    },
+    notInsetBoxShadowObject() {
+      return {
+        'background-color': this.backgroundColor,
+        'box-shadow': this.genBoxShadow(false)
       }
     },
     bottomComputedColor() {
       const orgHex = this.backgroundColor
       const bottomHSL = this.hexToHSL(orgHex)
-      if (bottomHSL.s > 10) bottomHSL.s -= 10
-      if (bottomHSL.l > 10) bottomHSL.l -= 10
+      if (bottomHSL.s > 10) bottomHSL.s -= 7
+      if (bottomHSL.l > 10) bottomHSL.l -= 7
       const result = this.hslToHex(bottomHSL)
       return result
     },
     topComputedColor() {
       const orgHex = this.backgroundColor
       const topHSL = this.hexToHSL(orgHex)
-      if (topHSL.s < 90) topHSL.s += 10
-      if (topHSL.l < 90) topHSL.l += 10
+      if (topHSL.s < 90) topHSL.s += 7
+      if (topHSL.l < 90) topHSL.l += 7
       const result = this.hslToHex(topHSL)
       return result
     }
@@ -128,22 +142,34 @@ export default {
       }
       return `#${toHex(r)}${toHex(g)}${toHex(b)}`
     },
+    push(key) {
+      this.inset = !this.inset
+    },
 
     /**
      * box-shadow: bottom-offset-x bottom-offset-y bottom-blur-radius bottom-shadow-color,
      *                top-offset-x top-offset-y top-blur-radius top-shadow-color,
      */
-    genBoxShadow(bottomObj, topObj) {
+    genBoxShadow(isInset) {
       const bottomOffsetX = '9px'
       const bottomOffsetY = '9px'
       const bottomBlurRadius = '18px'
       const bottomShadowColor = this.bottomComputedColor
+      // const bottomInset = 'inset'
+      // const bottomInset = ''
+      let bottomInset = ''
+
       const topOffsetX = '-9px'
       const topOffsetY = '-9px'
       const topBlurRadius = '18px'
       const topShadowColor = this.topComputedColor
+      // const topInset = 'inset'
+      // const topInset = ''
+      let topInset = ''
 
-      const boxShadow = `${bottomOffsetX} ${bottomOffsetY} ${bottomBlurRadius} ${bottomShadowColor}, ${topOffsetX} ${topOffsetY} ${topBlurRadius} ${topShadowColor}`
+      if (isInset) bottomInset = topInset = `inset`
+
+      const boxShadow = `${bottomInset} ${bottomOffsetX} ${bottomOffsetY} ${bottomBlurRadius} ${bottomShadowColor}, ${topInset} ${topOffsetX} ${topOffsetY} ${topBlurRadius} ${topShadowColor}`
       return boxShadow
     }
   }
@@ -151,21 +177,22 @@ export default {
 </script>
 
 <style lang="sass">
-.rounded-1
+
+.rounded-0
   border-radius: 0px
 
-.rounded-2
+.rounded-1
   border-radius: 10px
 
-.rounded-3
+.rounded-2
   border-radius: 20px
 
-.rounded-4
+.rounded-3
   border-radius: 30px
 
-.rounded-5
+.rounded-4
   border-radius: 40px
 
-.rounded-6
+.rounded-5
   border-radius: 50px
 </style>
