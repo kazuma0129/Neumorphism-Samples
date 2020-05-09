@@ -8,16 +8,9 @@
       </v-row>
     </v-container>
 
-    <v-container>
-      <Button :background-color="fabric.color" :background-image="fabric.img" />
+    <v-container v-for="(i, key) in colors" :key="key">
+      <Button :background-color="i" />
     </v-container>
-
-    <!-- <v-container>
-      <Button
-        :background-color="gunMetal.color"
-        :background-image="gunMetal.img"
-      />
-    </v-container> -->
   </v-col>
 </template>
 
@@ -27,10 +20,7 @@ export default {
   components: { Button },
   data() {
     return {
-      fabric: {
-        color: '#ffffff',
-        img: 'https://www.transparenttextures.com/patterns/fabric-plaid.png'
-      }
+      colors: ['#ffffff', `#ade5df`, `#60cfc6`, '#eeaaff', '#55b9f3', '#b5e2de']
     }
   }
 }
