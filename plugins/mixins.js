@@ -86,16 +86,12 @@ const genBoxShadow = (
   const bottomOffsetY = '9px'
   const bottomBlurRadius = '18px'
   const bottomShadowColor = bottomComputedColor
-  // const bottomInset = 'inset'
-  // const bottomInset = ''
   let bottomInset = ''
 
   const topOffsetX = '-9px'
   const topOffsetY = '-9px'
   const topBlurRadius = '18px'
   const topShadowColor = topComputedColor
-  // const topInset = 'inset'
-  // const topInset = ''
   let topInset = ''
 
   if (isInset) bottomInset = topInset = `inset`

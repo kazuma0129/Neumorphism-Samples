@@ -1,5 +1,5 @@
 <template>
-  <div :style="boxShadowObject" @click="push()">
+  <div :style="boxShadowObject" class="ma-3" @click="push()">
     <div class="pa-12"></div>
   </div>
 </template>
@@ -62,26 +62,6 @@ export default {
     push() {
       if (this.button) this.inset = !this.inset
     }
-    // genBoxShadow(isInset) {
-    //   const bottomOffsetX = '9px'
-    //   const bottomOffsetY = '9px'
-    //   const bottomBlurRadius = '18px'
-    //   const bottomShadowColor = this.bottomComputedColor
-    //   let bottomInset = ''
-
-    //   const topOffsetX = '-9px'
-    //   const topOffsetY = '-9px'
-    //   const topBlurRadius = '18px'
-    //   const topShadowColor = this.topComputedColor
-    //   let topInset = ''
-
-    //   if (isInset) bottomInset = topInset = `inset`
-
-    //   const boxShadow = `${bottomInset} ${bottomOffsetX} ${bottomOffsetY} ${bottomBlurRadius} ${bottomShadowColor}, ${topInset} ${topOffsetX} ${topOffsetY} ${topBlurRadius} ${topShadowColor}`
-    //   return boxShadow
-    // }
   }
 }
 </script>
-
-<style lang="sass"></style>

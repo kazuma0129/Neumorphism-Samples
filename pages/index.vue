@@ -12,25 +12,17 @@
       </v-row>
     </v-container>
 
-    <v-container>
-      <NeuSwitch :background-color="colors[1]" />
-      <NeuSwitch :background-color="colors[2]" />
-    </v-container>
-
     <v-container v-for="(i, key) in colors" :key="key">
       <Buttons :background-color="i" />
-      <!-- <NeuSwitch :background-color="i" /> -->
     </v-container>
   </v-col>
 </template>
 
 <script>
 import Buttons from '~/components/Buttons'
-import NeuSwitch from '~/components/NeuSwitch'
 export default {
   components: {
-    Buttons,
-    NeuSwitch
+    Buttons
   },
   data() {
     return {

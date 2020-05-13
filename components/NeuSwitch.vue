@@ -1,29 +1,10 @@
 <template>
-  <v-container
-    :style="{
-      'background-color': backgroundColor
-    }"
-  >
-    <v-row
-      align="center"
-      class="rounded-1 ma-xs-1 ma-sm-5 ma-md-10 ma-lg-10 ma-xl-10 pa-xs-3 pa-sm-5 pa-md-10 pa-lg-10 pa-xl-10"
-      :style="notInsetBoxShadowObject"
-    >
-      <v-col
-        v-for="(i, key) in 6"
-        :key="key"
-        xs="4"
-        sm="4"
-        md="4"
-        lg="2"
-        xl="2"
-        align="center"
-        justify="center"
-      >
-        aaas
-      </v-col>
-    </v-row>
-  </v-container>
+  <div :style="boxShadowObject" class="ma-3">
+    <!-- <div class="pa-12"> -->
+    <input type="checkbox" id="toggle" class="checkbox" />
+    <label for="toggle" class="switch"></label>
+    <!-- </div> -->
+  </div>
 </template>
 
 <script>
@@ -45,19 +26,12 @@ export default {
     boxShadowObject() {
       return {
         'background-color': this.backgroundColor,
-        'box-shadow': this.genBoxShadow(this.inset)
-      }
-    },
-    insetBoxShadowObject() {
-      return {
-        'background-color': this.backgroundColor,
-        'box-shadow': this.genBoxShadow(true)
-      }
-    },
-    notInsetBoxShadowObject() {
-      return {
-        'background-color': this.backgroundColor,
-        'box-shadow': this.genBoxShadow(false)
+        'box-shadow': this.genBoxShadow(
+          this.bottomComputedColor,
+          this.topComputedColor,
+          this.inset
+        ),
+        'border-radius': `${this.round}px`
       }
     },
     bottomComputedColor() {
@@ -65,7 +39,7 @@ export default {
       const bottomHSL = this.hexToHSL(orgHex)
       if (bottomHSL.s > 10) bottomHSL.s -= 7
       if (bottomHSL.l > 10) bottomHSL.l -= 7
-      const result = this.hslToHex(bottomHSL)
+      const result = this.HSLToHex(bottomHSL)
       return result
     },
     topComputedColor() {
@@ -73,122 +47,44 @@ export default {
       const topHSL = this.hexToHSL(orgHex)
       if (topHSL.s < 90) topHSL.s += 7
       if (topHSL.l < 90) topHSL.l += 7
-      const result = this.hslToHex(topHSL)
+      const result = this.HSLToHex(topHSL)
       return result
     }
   },
   mounted() {},
-  methods: {
-    hexToHSL(hex) {
-      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-      const r = parseInt(result[1], 16) / 255
-      const g = parseInt(result[2], 16) / 255
-      const b = parseInt(result[3], 16) / 255
-      const max = Math.max(r, g, b)
-      const min = Math.min(r, g, b)
-      let h = 0
-      let s = 0
-      const l = (max + min) / 2
-      if (max === min) {
-        h = s = 0 // achromatic
-      } else {
-        const d = max - min
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-        switch (max) {
-          case r:
-            h = (g - b) / d + (g < b ? 6 : 0)
-            break
-          case g:
-            h = (b - r) / d + 2
-            break
-          case b:
-            h = (r - g) / d + 4
-            break
-        }
-        h /= 6
-      }
-      const HSL = { h: h * 360, s: s * 100, l: l * 100 }
-      return HSL
-    },
-    hslToHex(hslObject) {
-      const h = hslObject.h / 360
-      const s = hslObject.s / 100
-      const l = hslObject.l / 100
-      let r, g, b
-      if (s === 0) {
-        r = g = b = l // achromatic
-      } else {
-        const hue2rgb = (p, q, t) => {
-          if (t < 0) t += 1
-          if (t > 1) t -= 1
-          if (t < 1 / 6) return p + (q - p) * 6 * t
-          if (t < 1 / 2) return q
-          if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
-          return p
-        }
-        const q = l < 0.5 ? l * (1 + s) : l + s - l * s
-        const p = 2 * l - q
-        r = hue2rgb(p, q, h + 1 / 3)
-        g = hue2rgb(p, q, h)
-        b = hue2rgb(p, q, h - 1 / 3)
-      }
-      const toHex = (x) => {
-        const hex = Math.round(x * 255).toString(16)
-        return hex.length === 1 ? '0' + hex : hex
-      }
-      return `#${toHex(r)}${toHex(g)}${toHex(b)}`
-    },
-    push(key) {
-      this.inset = !this.inset
-    },
-
-    /**
-     * box-shadow: bottom-offset-x bottom-offset-y bottom-blur-radius bottom-shadow-color,
-     *                top-offset-x top-offset-y top-blur-radius top-shadow-color,
-     */
-    genBoxShadow(isInset) {
-      const bottomOffsetX = '9px'
-      const bottomOffsetY = '9px'
-      const bottomBlurRadius = '18px'
-      const bottomShadowColor = this.bottomComputedColor
-      // const bottomInset = 'inset'
-      // const bottomInset = ''
-      let bottomInset = ''
-
-      const topOffsetX = '-9px'
-      const topOffsetY = '-9px'
-      const topBlurRadius = '18px'
-      const topShadowColor = this.topComputedColor
-      // const topInset = 'inset'
-      // const topInset = ''
-      let topInset = ''
-
-      if (isInset) bottomInset = topInset = `inset`
-
-      const boxShadow = `${bottomInset} ${bottomOffsetX} ${bottomOffsetY} ${bottomBlurRadius} ${bottomShadowColor}, ${topInset} ${topOffsetX} ${topOffsetY} ${topBlurRadius} ${topShadowColor}`
-      return boxShadow
-    }
-  }
+  methods: {}
 }
 </script>
 
-<style lang="sass">
+<style lang="scss">
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
+  transition: all 0.3s;
+}
+.switch::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: white;
+  top: 1px;
+  left: 1px;
+  transition: all 0.3s;
+}
 
-.rounded-0
-  border-radius: 0px
-
-.rounded-1
-  border-radius: 10px
-
-.rounded-2
-  border-radius: 20px
-
-.rounded-3
-  border-radius: 30px
-
-.rounded-4
-  border-radius: 40px
-
-.rounded-5
-  border-radius: 50px
+.checkbox:checked + .switch::after {
+  left: 31px;
+}
+.checkbox:checked + .switch {
+  background-color: #7983ff;
+}
+.checkbox {
+  display: none;
+}
 </style>
